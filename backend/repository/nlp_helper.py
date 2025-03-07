@@ -209,7 +209,7 @@ KNOWN_SYMPTOMS = [
     "pain in gums",
 ]
 
-# Create a PhraseMatcher to detect known symptoms
+# Create PhraseMatcher for exact symptom detection
 matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
 patterns = [nlp(symptom) for symptom in KNOWN_SYMPTOMS]
 matcher.add("SYMPTOMS", patterns)
@@ -217,25 +217,24 @@ matcher.add("SYMPTOMS", patterns)
 
 def extract_symptoms(user_input):
     """
-    Extract symptoms from user input using NLP, phrase matching, and fuzzy matching.
+    Extract symptoms from user input using NLP phrase matching and fuzzy matching.
     """
     doc = nlp(user_input.lower())
     extracted_symptoms = set()
 
-    # Use PhraseMatcher for exact symptom matches
+    # 1. Use PhraseMatcher for exact matches
     matches = matcher(doc)
     for match_id, start, end in matches:
         extracted_symptoms.add(doc[start:end].text)
 
-    # Use fuzzy matching for symptoms not detected exactly
-    for phrase in [chunk.text for chunk in doc.noun_chunks]:  # Extract noun phrases
-        match, score = process.extractOne(phrase, KNOWN_SYMPTOMS)
-        if score > 90:  # Adjusted threshold for better detection
-            extracted_symptoms.add(match)
+    # 2. Use fuzzy matching for approximate matches
+    noun_phrases = [chunk.text for chunk in doc.noun_chunks]  # Extract noun phrases
+    for phrase in noun_phrases:
+        fuzzy_matches = process.extract(
+            phrase, KNOWN_SYMPTOMS, limit=3
+        )  # Get top 3 matches
+        for match, score in fuzzy_matches:
+            if score > 90:  # Lowered threshold for better detection
+                extracted_symptoms.add(match)
 
     return list(extracted_symptoms)
-
-
-# Example Test Case
-user_input = "I have a bad headache, fever and throat swelling."
-print(extract_symptoms(user_input))
