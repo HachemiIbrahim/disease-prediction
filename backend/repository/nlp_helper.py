@@ -214,6 +214,11 @@ matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
 patterns = [nlp(symptom) for symptom in KNOWN_SYMPTOMS]
 matcher.add("SYMPTOMS", patterns)
 
+# Create a PhraseMatcher to detect known symptoms
+matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
+patterns = [nlp(symptom) for symptom in KNOWN_SYMPTOMS]
+matcher.add("SYMPTOMS", patterns)
+
 
 def extract_symptoms(user_input):
     """
@@ -222,19 +227,24 @@ def extract_symptoms(user_input):
     doc = nlp(user_input.lower())
     extracted_symptoms = set()
 
-    # 1. Use PhraseMatcher for exact matches
+    # 1️⃣ **Exact Phrase Matching** (More Accurate)
     matches = matcher(doc)
     for match_id, start, end in matches:
         extracted_symptoms.add(doc[start:end].text)
 
-    # 2. Use fuzzy matching for approximate matches
+    # 2️⃣ **Fuzzy Matching** (Handles Misspellings & Variations)
     noun_phrases = [chunk.text for chunk in doc.noun_chunks]  # Extract noun phrases
     for phrase in noun_phrases:
         fuzzy_matches = process.extract(
             phrase, KNOWN_SYMPTOMS, limit=3
         )  # Get top 3 matches
         for match, score in fuzzy_matches:
-            if score > 90:  # Lowered threshold for better detection
+            if score > 90:  # Adjusted threshold for better recall
                 extracted_symptoms.add(match)
 
     return list(extracted_symptoms)
+
+
+# 🔍 **Test Case**
+user_input = "I have a bad headache, fever and throat swelling."
+print(extract_symptoms(user_input))
