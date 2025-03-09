@@ -22,7 +22,7 @@ Download the dataset from Kaggle: [Diseases and Symptoms Dataset](https://www.ka
 Extract the dataset into the `model/` or `notebooks/` directory.
 
 ### 3. Run the Notebook
-Navigate to the `notebooks/` directory and open the Jupyter notebook to train or test the model.
+Open the Jupyter notebook to train or test the model.
 ```sh
 jupyter notebook
 ```
