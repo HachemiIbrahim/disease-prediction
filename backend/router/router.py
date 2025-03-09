@@ -1,5 +1,6 @@
-from db.models import UserInput  # Import from models.py
 from fastapi import APIRouter
+
+from db.models import UserInput  # Import from models.py
 from repository.predection_repository import predict_disease
 
 router = APIRouter(
@@ -8,6 +9,6 @@ router = APIRouter(
 )
 
 
-@router.post("/predict/")
+@router.post("/predict")
 def predict(user_input: UserInput):
     return predict_disease(user_input)
