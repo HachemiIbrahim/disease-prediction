@@ -5,14 +5,14 @@ from repository.nlp_helper import KNOWN_SYMPTOMS, extract_symptoms
 
 # Load trained model
 with open(
-    r"C:\Users\ibrah\Documents\FastApi\disease-prediction\the model\final_random_forest_model.pkl",
+    r"the model\final_random_forest_model.pkl",
     "rb",
 ) as file:
     model = joblib.load(file)
 
 # Load the LabelEncoder used during training
 with open(
-    r"C:\Users\ibrah\Documents\FastApi\disease-prediction\the model\label_encoder.pkl",
+    r"the model\label_encoder.pkl",
     "rb",
 ) as file:
     le = joblib.load(file)  # This should be the same encoder used on 'diseases' column
