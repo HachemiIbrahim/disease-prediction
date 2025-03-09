@@ -4,3 +4,4 @@ final_random_forest_model.pkl
 data
 __pycache__
 label_encoder.pkl
+.vscode
